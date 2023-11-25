@@ -1,6 +1,47 @@
-{% include 'header.html' %}
 
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'login.css') }}">
+    <title>{{title}}</title>
+</head>
 
-</body>
+<body>
+    <div class="bg-container row">
+        <div class="d-flex align-items-center justify-content-center col">
+            <div class="signupDiv">
+                <p class="heading">Sign in</p>
+                <p class="paragraph">If you don't have an account register here<br>
+                    You can <a href="{{url_for('login')}}">Register here !</a>
+                </p>
+                <form action="" method = "POST">
+                    <i class="fa-regular fa-envelope"></i>
+
+                    {{ form.email.label }}
+                    {{ form.email(class = 'inputForm', placeholder = 'Enter your Email') }}
+                    <i class="fa-solid fa-key"></i>
+                    {{ form.password.label }}
+                    {{ form.password(class = 'inputForm', placeholder = 'Enter your Password') }}
+                    <button type="submit" class="submitBtn btn">Login</button>
+                    
+                </form>
+            </div>
+        </div>
+        <div class="imageContainer col">
+            <img src="https://img.freepik.com/free-vector/sign-concept-illustration_114360-5425.jpg" style="border-radius: 2rem;" class="image">
+        </div>
+    </div>
+    <!-- PASSWARD -->
+    
+    </body>
+
 </html>
