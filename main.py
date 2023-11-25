@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
@@ -38,15 +38,15 @@ def login():
 @app.route('/signup', methods = ['GET', "POST"])
 def signup():
     form = SignupForm()
-    if form.validate_on_submit():
+    if request.method == 'POST':
         new_user = User(
             email = form.email.data,
             username = form.username.data,
-            password = generate_password_hash(form.cnfword.data, 'pdkdf:sha256', salt_length=16)
+            password = generate_password_hash(form.cnfword.data, 'pbkdf2:sha256', salt_length=16)
         )
         db.session.add(new_user)
-        login_user(new_user)
         db.session.commit()
+        login_user(new_user)
         return redirect(url_for('dashboard'))
     return render_template("signup.html", title = 'Sign Up!', form = form)
 
@@ -54,6 +54,12 @@ def signup():
 @login_required
 def dashboard():
     return render_template('dashboard.html', title = "Dashboard")
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
