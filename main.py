@@ -1,7 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
+import requests
 from forms import *
 
 app = Flask(__name__)
@@ -29,6 +30,34 @@ with app.app_context() as conn:
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/queryResults', methods = ['GET', "POST"])
+def results():
+    query = request.args.get('query')
+    apiKey = 'ce9d991a1e37e67d2dfd5820aa08017e'
+    appId = '4b2af47b'
+    params = {
+    'q':query,
+    'app_id': appId,
+    'app_key': apiKey
+    }
+    response = requests.get(f'https://api.edamam.com/search', params=params)
+    data = response.json()
+    recipes = []
+    for i in data['hits']:
+        nutrients = i['recipe']['totalNutrients']
+        dict = {
+            'dishName' : i['recipe']['label'],
+            'calories' : round(i['recipe']['calories']),
+            'cuisineType' : i['recipe']['cuisineType'],
+            'ingredients' : i['recipe']['ingredientLines'],
+            'dishName' : i['recipe']['label'],
+            'totalNutrients' : [f"{nutrients[j]['label']} : {round(nutrients[j]['quantity'], 2)}{nutrients[j]['unit']}" for j in nutrients],
+            'image' : i['recipe']['image']
+        }
+        recipes.append(dict)
+    return jsonify(recipes)
+
 
 @app.route('/login', methods = ['GET', "POST"])
 def login():
@@ -65,7 +94,7 @@ def signup():
 @app.route('/dashboard', methods = ['GET', 'POST'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html', title = "Dashboard")
+    return render_template('dashboard.html', title = "Dashboard", user = current_user)
 
 @app.route('/logout')
 @login_required
