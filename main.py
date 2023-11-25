@@ -23,6 +23,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique = True, nullable = False)
     password = db.Column(db.String(250), nullable = False)
 
+with app.app_context() as conn:
+    db.create_all()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -42,11 +45,13 @@ def signup():
             password = generate_password_hash(form.cnfword.data, 'pdkdf:sha256', salt_length=16)
         )
         db.session.add(new_user)
+        login_user(new_user)
         db.session.commit()
         return redirect(url_for('dashboard'))
     return render_template("signup.html", title = 'Sign Up!', form = form)
 
 @app.route('/dashboard', methods = ['GET', 'POST'])
+@login_required
 def dashboard():
     return render_template('dashboard.html', title = "Dashboard")
 
