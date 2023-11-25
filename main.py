@@ -32,12 +32,24 @@ def index():
 
 @app.route('/login', methods = ['GET', "POST"])
 def login():
+    err = None
     form = LoginForm()
-    return render_template('login.html', title = 'Login', form = form)
+    if request.method == 'POST':
+        user = User.query.filter_by(email = form.email.data).first()
+        if user:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user)
+                return redirect(url_for('dashboard'))
+            else:
+                err = "Password is Incorrect."
+        else:
+            err = 'Email is not found in the database. Please Register.'
+    return render_template('login.html', title = 'Login', form = form, err = err)
 
 @app.route('/signup', methods = ['GET', "POST"])
 def signup():
     form = SignupForm()
+    err = None
     if request.method == 'POST':
         new_user = User(
             email = form.email.data,
@@ -48,7 +60,7 @@ def signup():
         db.session.commit()
         login_user(new_user)
         return redirect(url_for('dashboard'))
-    return render_template("signup.html", title = 'Sign Up!', form = form)
+    return render_template("signup.html", title = 'Sign Up!', form = form, err = err)
 
 @app.route('/dashboard', methods = ['GET', 'POST'])
 @login_required

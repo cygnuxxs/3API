@@ -31,6 +31,9 @@
                 <p class="paragraph">If you don't have an account register here<br>
                     You can <a href="{{url_for('signup')}}">Register here !</a>
                 </p>
+                {% if err %}
+                <p style="color: #da4167; font-size: 14px;" class="error">{{ err }}</p>
+                {% endif %}
                 <form action="" method="POST">
                     <i class="fa-regular fa-envelope"></i>
                     <label for="email">Email</label>
