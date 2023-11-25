@@ -87,6 +87,7 @@
     margin-top: 20px;
    
  }
+ 
 
  @media (max-width:767px) {
     .imageContainer {
@@ -95,4 +96,16 @@
     .imageDiv {
         display: none !important;
     }
+}
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 28%;
+    right: 0px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-third);
 }
