@@ -21,7 +21,11 @@
                 <p class="paragraph">If you already have an account registered. <br>
                     You can <a href="{{url_for('login')}}">Login here !</a>
                 </p>
+                {% if err %}
+                <p>{{ err }}</p>
+                {% endif %}
                 <form action="" method = "POST">
+                    {{ form.hidden_tag() }}
                     {{ form.email.label }}
                     {{ form.email(class = 'inputForm', placeholder = 'Enter your email address') }}
                     {{ form.username.label }}

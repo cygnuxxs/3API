@@ -52,8 +52,9 @@ def results():
             'cuisineType' : i['recipe']['cuisineType'],
             'ingredients' : i['recipe']['ingredientLines'],
             'dishName' : i['recipe']['label'],
-            'totalNutrients' : [f"{nutrients[j]['label']} : {round(nutrients[j]['quantity'], 2)}{nutrients[j]['unit']}" for j in nutrients],
-            'image' : i['recipe']['image']
+            'totalNutritions' : [f"{nutrients[j]['label']} : {round(nutrients[j]['quantity'], 2)}{nutrients[j]['unit']}" for j in nutrients],
+            'image' : i['recipe']['image'],
+            'dishType' : i['recipe']['dishType'],
         }
         recipes.append(dict)
     return jsonify(recipes)
@@ -63,7 +64,7 @@ def results():
 def login():
     err = None
     form = LoginForm()
-    if request.method == 'POST':
+    if form.validate_on_submit():
         user = User.query.filter_by(email = form.email.data).first()
         if user:
             if check_password_hash(user.password, form.password.data):
@@ -79,16 +80,22 @@ def login():
 def signup():
     form = SignupForm()
     err = None
-    if request.method == 'POST':
-        new_user = User(
-            email = form.email.data,
-            username = form.username.data,
-            password = generate_password_hash(form.cnfword.data, 'pbkdf2:sha256', salt_length=16)
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
-        return redirect(url_for('dashboard'))
+    if request.method == "POST":
+        err = 'Password should be same.'
+    if form.validate_on_submit():
+        user = User.query.filter_by(email = form.email.data).first()
+        if user:
+            err = 'You already have an account, Login Instead.'
+        else:
+            new_user = User(
+                    email = form.email.data,
+                    username = form.username.data,
+                    password = generate_password_hash(form.cnfword.data, 'pbkdf2:sha256', salt_length=16)
+                )
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+            return redirect(url_for('dashboard'))
     return render_template("signup.html", title = 'Sign Up!', form = form, err = err)
 
 @app.route('/dashboard', methods = ['GET', 'POST'])

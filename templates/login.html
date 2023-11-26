@@ -35,6 +35,7 @@
                 <p style="color: #da4167; font-size: 14px;" class="error">{{ err }}</p>
                 {% endif %}
                 <form action="" method="POST">
+                    {{ form.hidden_tag() }}
                     <i class="fa-regular fa-envelope"></i>
                     <label for="email">Email</label>
 

@@ -10,6 +10,6 @@ class LoginForm(FlaskForm):
 class SignupForm(FlaskForm):
     email = EmailField("Email", [DataRequired('Please Enter Valid Email Address')])
     username = StringField("Username", [DataRequired("Username should be minimum 4 letters."), Length(min=4, max=50)])
-    pword = PasswordField('Password', [DataRequired("Password should be minimum 8 letters."), Length(min=8)])
-    cnfword = PasswordField("Confirm Password", [DataRequired(), EqualTo('pword', message="Password should be same.")])
+    pword = PasswordField('Password', [DataRequired("Password should be minimum 8 letters."), Length(min=8), EqualTo('cnfword', message="Password should be same.")])
+    cnfword = PasswordField("Confirm Password", [DataRequired()])
     submit = SubmitField("Register")
